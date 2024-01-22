@@ -25,7 +25,7 @@ spec:
   maxHistory: 2
   chart:
     spec:
-      chart: flink-kubernetes-operato
+      chart: flink-kubernetes-operator
       sourceRef:
         kind: HelmRepository
         name: flink-operator-repo
