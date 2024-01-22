@@ -1,0 +1,29 @@
+# https://medium.com/@buildbot.tech/running-kafka-on-a-single-node-in-k8s-cluster-b5c68f7fd92d
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: kafka-repo
+  namespace: flux-system
+spec:
+  type: "oci"
+  interval: 30m0s
+  url: oci://ghcr.io/rverma-dev/kafka
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: kafka
+  namespace: tidb-cluster
+spec:
+  interval: 1h
+  releaseName: kafka
+  timeout: 10m
+  maxHistory: 2
+  chart:
+    spec:
+      chart: single-node-kafka
+      sourceRef:
+        kind: HelmRepository
+        name: kafka-repo
+        namespace: flux-system
+      version: '0.1.0'

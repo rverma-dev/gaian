@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 30383,
+            "driver": "TiDB",
+            "name": "local",
+            "database": "test",
+            "username": "root"
+        }
+    ]
+}
