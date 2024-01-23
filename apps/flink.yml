@@ -10,3 +10,11 @@ spec:
     taskmanager.numberOfTaskSlots: "4"
   serviceAccount: flink
   mode: standalone
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
