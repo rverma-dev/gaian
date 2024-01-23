@@ -47,6 +47,8 @@ spec:
       raftdb:
         max-open-files: 256
   tidb:
+    initializer:
+      createPassword: true
     storageClassName: local-path
     baseImage: pingcap/tidb
     maxFailoverCount: 0
@@ -71,6 +73,22 @@ spec:
     baseImage: pingcap/ticdc
     replicas: 1
 ---
+# apiVersion: pingcap.com/v1alpha1
+# kind: TidbInitializer
+# metadata:
+#   name: tidb-init
+#   namespace: tidb-cluster
+# spec:
+#   image: tnir/mysqlclient
+#   # imagePullPolicy: IfNotPresent
+#   cluster:
+#     namespace: tidb-cluster
+#     name: tidb
+#   initSql: |-
+#     create database app;
+#   # initSqlConfigMap: tidb-initsql
+#   passwordSecret: tidb-secret
+---  
 # apiVersion: batch/v1
 # kind: Job
 # metadata:
