@@ -54,7 +54,7 @@ spec:
     maxFailoverCount: 0
     replicas: 1
     service:
-      type: NodePort
+      type: ClusterIP
     config: |
       [performance]
         tcp-keep-alive = true
