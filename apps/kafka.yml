@@ -27,3 +27,6 @@ spec:
         name: kafka-repo
         namespace: flux-system
       version: '0.1.0'
+  values:
+    kafka:
+      message.max.bytes: 4096
