@@ -28,6 +28,5 @@ spec:
         namespace: flux-system
       version: "26.8.0"
   values:
-    replicaCount: 1
     controller:
-      replicaCount: 1
+      replicaCount: 3
