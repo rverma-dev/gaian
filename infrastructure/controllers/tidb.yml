@@ -19,6 +19,8 @@ metadata:
   name: tidb-operator
   namespace: tidb-admin
 spec:
+  dependsOn:
+    - name: cert-manager
   interval: 1h
   releaseName: tidb-operator
   timeout: 10m
@@ -30,4 +32,3 @@ spec:
         kind: HelmRepository
         name: pingcap
         namespace: flux-system
----

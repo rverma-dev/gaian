@@ -19,6 +19,8 @@ metadata:
   name: flink-kubernetes-operator
   namespace: flink
 spec:
+  dependsOn:
+    - name: cert-manager
   interval: 1h
   releaseName: flink-kubernetes-operator
   timeout: 10m
@@ -31,3 +33,4 @@ spec:
         name: flink-operator-repo
         namespace: flux-system
 ---
+
