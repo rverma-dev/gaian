@@ -5,3 +5,4 @@ resources:
   - https://raw.githubusercontent.com/pingcap/tidb-operator/master/manifests/crd.yaml
   - tidb.yml
   - flink.yml
+  - confluent.yml
