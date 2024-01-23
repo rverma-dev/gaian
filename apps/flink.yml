@@ -8,7 +8,7 @@ spec:
   flinkVersion: v1_17
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: "4"
-  serviceAccount: flink
+  serviceAccount: tidb-cluster
   mode: standalone
   jobManager:
     resource:
