@@ -8,13 +8,9 @@ spec:
   image:
     application: confluentinc/cp-zookeeper:7.5.3
     init: confluentinc/confluent-init-container:2.7.3
-  dataVolumeCapacity: 10Gi
-  logVolumeCapacity: 10Gi
+  dataVolumeCapacity: 1Gi
+  logVolumeCapacity: 1Gi
   podTemplate:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
     podSecurityContext:
       fsGroup: 1000
       runAsUser: 1000
@@ -30,7 +26,7 @@ spec:
   image:
     application: confluentinc/cp-server:7.5.3
     init: confluentinc/confluent-init-container:2.7.3
-  dataVolumeCapacity: 10Gi
+  dataVolumeCapacity: 5Gi
   configOverrides:
     server:
       - "confluent.license.topic.replication.factor=1"
@@ -44,10 +40,6 @@ spec:
       - "confluent.cluster.link.enable=true"
       - "password.encoder.secret=secret"
   podTemplate:
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
     podSecurityContext:
       fsGroup: 1000
       runAsUser: 1000
