@@ -105,8 +105,8 @@ spec:
 #           - -c
 #           - >
 #             ./cdc cli changefeed create \
-#             --server=http://ticdc-service:8301 \
-#             --sink-uri="kafka://kafka-0.kafka.confluent.svc.cluster.local:9092/ticdc?protocol=canal-json&kafka-version=3.6.1&partition-num=1&max-message-bytes=67108864&replication-factor=1" \
+#             --server=http://localhost:8301 \
+#             --sink-uri="kafka://kafka-0-internal.confluent.svc.cluster.local:9092/ticdc?protocol=canal-json&kafka-version=3.6.1&partition-num=1&max-message-bytes=67108864&replication-factor=1" \
 #             --changefeed-id="simple-replication-task"
 #       restartPolicy: Never
 # kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic ticdc --from-beginning
