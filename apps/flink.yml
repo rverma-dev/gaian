@@ -7,13 +7,18 @@ spec:
   image: flink:1.17
   flinkVersion: v1_17
   flinkConfiguration:
+    job.autoscaler.enabled: "true"
+    job.autoscaler.stabilization.interval: "1m"
+    job.autoscaler.metrics.window: "15m"
+    job.autoscaler.target.utilization: "0.5"
+    job.autoscaler.target.utilization.boundary: "0.3"
+    pipeline.max-parallelism: "5"
     taskmanager.numberOfTaskSlots: "4"
   serviceAccount: flink
   mode: standalone
   jobManager:
     resource:
-      memory: "1024m"
-      cpu: 1
+      cpu: 0.25
   taskManager:
     resource:
       memory: "1024m"
