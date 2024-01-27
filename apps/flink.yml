@@ -18,10 +18,11 @@ spec:
   mode: standalone
   jobManager:
     resource:
+      memory: "1048m"
       cpu: 1
   taskManager:
     resource:
-      memory: "2048m"
+      memory: "1048m"
       cpu: 1
   maxReplicas: 5
 ---
