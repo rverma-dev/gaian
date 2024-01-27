@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubeshop
+---  
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: kubeshop
+  namespace: flux-system
+spec:
+  interval: 30m0s
+  url:  https://kubeshop.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: testkube
+  namespace: kubeshop
+spec:
+  interval: 1h
+  releaseName: testkube
+  timeout: 15m
+  maxHistory: 2
+  chart:
+    spec:
+      chart: testkube
+      sourceRef:
+        kind: HelmRepository
+        name: kubeshop
+        namespace: flux-system
+  values:
+    testkube-api:
+      prometheus:
+        enabled: true
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kubeshop
+resources:
+  - github.com/grafana/k6-operator/config/default
+     

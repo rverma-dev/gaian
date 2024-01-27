@@ -5,13 +5,15 @@ metadata:
   name: letsencrypt
 spec:
   acme:
-    # Replace the email address with your own contact email
-    email: fluxcdbot@users.noreply.github.com
+    email: rohit.verma@gaiansolutions.com
     # The server is replaced in /clusters/production/infrastructure.yaml
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: letsencrypt-nginx
+      name: letsencrypt-key
     solvers:
-      - http01:
-          ingress:
-            class: nginx
+      - dns01:
+          cloudflare:
+            email: rohit.verma@gaiansolutions.com
+            apiKeySecretRef:
+              name: cloudflare-credentials
+              key: CF_API_KEY

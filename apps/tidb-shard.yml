@@ -1,0 +1,55 @@
+# CREATE PLACEMENT POLICY t1 CONSTRAINTS="[+shard=shard-1]";
+# CREATE DATABASE t1 PLACEMENT POLICY=`t1`;
+apiVersion: pingcap.com/v1alpha1
+kind: TidbCluster
+metadata:
+  name: shard-1
+spec:
+  configUpdateStrategy: RollingUpdate
+  version: v7.5.0
+  timezone: UTC
+  pvReclaimPolicy: Delete
+  cluster:
+    name: tidb
+  tikv:
+    storageClassName: ultra-csi
+    baseImage: pingcap/tikv
+    maxFailoverCount: 0
+    replicas: 2
+    requests:
+      storage: "20Gi"
+    labels:
+      shard: shard-1
+    config: |
+      max-days = 1
+      auto-adjust-pool-size = true
+      [server]
+        [rocksdb.titan]
+          enabled = true
+        [server.labels]
+          shard = "shard-1"
+      [security]
+        cert-allowed-cn = [ "TiDB" ]
+    nodeSelector:
+      dedicated: tikv
+    topologySpreadConstraints:
+      - topologyKey: topology.kubernetes.io/zone
+    tolerations:
+      - effect: NoSchedule
+        key: dedicated
+        operator: Equal
+        value: tikv
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: shard
+                  operator: In
+                  values:
+                    - shard-1
+            topologyKey: kubernetes.io/hostname
+---
+# Validate Placement
+# select t0.region_id, t1.store_id from INFORMATION_SCHEMA.TIKV_REGION_STATUS t0 join INFORMATION_SCHEMA.TIKV_REGION_PEERS t1 on t0.region_id=t1.region_id where t0.DB_NAME = 't1' and t0.TABLE_NAME='vertex';
+# select * from INFORMATION_SCHEMA.TIKV_STORE_STATUS where storeid=1;            
