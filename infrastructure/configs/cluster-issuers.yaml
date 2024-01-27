@@ -2,18 +2,6 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt
+  name: selfsigned-clusterissuer
 spec:
-  acme:
-    email: rohit.verma@gaiansolutions.com
-    # The server is replaced in /clusters/production/infrastructure.yaml
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      name: letsencrypt-key
-    solvers:
-      - dns01:
-          cloudflare:
-            email: rohit.verma@gaiansolutions.com
-            apiKeySecretRef:
-              name: cloudflare-credentials
-              key: CF_API_KEY
+  selfSigned: {}
