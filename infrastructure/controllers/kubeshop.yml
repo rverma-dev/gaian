@@ -49,5 +49,4 @@ spec:
         nodeSelector: 
           kubernetes.azure.com/agentpool: nodepool1
       natsbox:
-        nodeSelector: 
-          kubernetes.azure.com/agentpool: nodepool1
+        enabled: false
