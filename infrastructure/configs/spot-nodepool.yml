@@ -4,6 +4,9 @@ metadata:
   name: k6-spot-nodepool
 spec:
   template:
+    metadata:
+      labels:
+        dedicated: k6
     spec:
       nodeClassRef:
         name: default
@@ -17,8 +20,6 @@ spec:
         - key: "karpenter.sh/capacity-type"
           operator: In
           values: ["spot"]
-      labels:
-        dedicated: k6
       taints:
         - key: dedicated
           value: k6
