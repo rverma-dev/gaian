@@ -46,6 +46,8 @@ spec:
       nats:
         limits:
           maxPayload: 8MB
-        nodeSelector: {}
+        nodeSelector: 
+          kubernetes.azure.com/agentpool: nodepool1
       natsbox:
-        nodeSelector: {}
+        nodeSelector: 
+          kubernetes.azure.com/agentpool: nodepool1
