@@ -89,7 +89,7 @@ spec:
           values: ["Standard_F4s_v2"]
         - key: "karpenter.sh/capacity-type"
           operator: In
-          values: ["spot", "on-demand"]
+          values: ["on-demand"]
       taints:
         - key: dedicated
           value: tidb
@@ -133,7 +133,7 @@ spec:
           values: ["Standard_E4s_v4"]
         - key: "karpenter.sh/capacity-type"
           operator: In
-          values: ["spot", "on-demand"]
+          values: ["on-demand"]
       taints:
         - key: dedicated
           value: tikv
