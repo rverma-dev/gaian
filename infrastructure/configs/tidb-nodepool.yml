@@ -14,6 +14,21 @@ mountOptions:
   - nodelalloc
   - noatime
 ---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: default-csi
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: StandardSSD_LRS
+  cachingMode: None
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+mountOptions:
+  - nodelalloc
+  - noatime
+---
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:
