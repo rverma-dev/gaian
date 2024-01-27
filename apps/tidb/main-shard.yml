@@ -27,7 +27,7 @@ spec:
   # TiKV nodes are dedicated for each shard cluster
   ###########################
   pd:
-    storageClassName: managed-csi
+    storageClassName: default
     baseImage: pingcap/pd
     maxFailoverCount: 0
     replicas: 3
@@ -100,7 +100,7 @@ spec:
               - tikv
           topologyKey: kubernetes.io/hostname
   tidb:
-    storageClassName: managed-csi
+    storageClassName: default
     baseImage: pingcap/tidb
     maxFailoverCount: 0
     replicas: 2
@@ -156,6 +156,7 @@ spec:
               - tidb
           topologyKey: kubernetes.io/hostname
   ticdc:
+    storageClassName: default
     baseImage: pingcap/ticdc
     replicas: 1
     config:
