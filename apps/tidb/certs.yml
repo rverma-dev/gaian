@@ -217,3 +217,36 @@ spec:
     name: tidb-tidb-issuer
     kind: Issuer
     group: cert-manager.io    
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-tidb-server-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-tidb-server-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "TiDB Server"
+  usages:
+    - server auth
+  dnsNames:
+    - "tidb-tidb"
+    - "tidb-tidb.tidb-cluster"
+    - "tidb-tidb.tidb-cluster.svc"
+    - "*.tidb-tidb"
+    - "*.tidb-tidb.tidb-cluster"
+    - "*.tidb-tidb.tidb-cluster.svc"
+    - "*.tidb-tidb-peer"
+    - "*.tidb-tidb-peer.tidb-cluster"
+    - "*.tidb-tidb-peer.tidb-cluster.svc"
+  ipAddresses:
+    - 127.0.0.1
+    - ::1
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io    
