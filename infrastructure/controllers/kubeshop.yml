@@ -33,10 +33,4 @@ spec:
     testkube-api:
       prometheus:
         enabled: true
----
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-namespace: kubeshop
-resources:
-  - github.com/grafana/k6-operator/config/default
      
