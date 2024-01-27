@@ -36,6 +36,7 @@ spec:
         orgId: tkcorg_3fed6319dfba2091 
         envId: tkcenv_c74b127c844774d8 
         url: agent.testkube.io:443
-      minio.enabled: false
+      minio:
+        enabled: false
     testkube-dashboard:
       enabled: false
