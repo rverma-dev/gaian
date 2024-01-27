@@ -32,7 +32,6 @@ spec:
     maxFailoverCount: 0
     replicas: 3
     enableDashboardInternalProxy: true
-    mountClusterClientSecret: true
     requests:
       storage: "10Gi"
     #  validate using show placement labels; SHOW PLACEMENT;
@@ -42,6 +41,7 @@ spec:
         max-replicas = 3
       [security]
         cert-allowed-cn = [ "TiDB" ]
+    tlsClientSecretName: tidb-pd-dashboard-client-secret
     podSecurityContext:
       runAsUser: 1000
       runAsGroup: 2000
@@ -68,7 +68,6 @@ spec:
     baseImage: pingcap/tikv
     maxFailoverCount: 0
     replicas: 2
-    mountClusterClientSecret: true
     requests:
       storage: "50Gi"
     config: |
@@ -159,6 +158,10 @@ spec:
   ticdc:
     baseImage: pingcap/ticdc
     replicas: 1
+    config:
+     security:
+       cert-allowed-cn:
+         - TiDB
 ---
 # apiVersion: pingcap.com/v1alpha1
 # kind: TidbClusterAutoScaler

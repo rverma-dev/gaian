@@ -1,0 +1,199 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-ca
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-ca-secret
+  commonName: "TiDB"
+  isCA: true
+  duration: 87600h # 10yrs
+  renewBefore: 720h # 30d
+  issuerRef:
+    name: selfsigned-clusterissuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: tidb-tidb-issuer
+  namespace: tidb-cluster
+spec:
+  ca:
+    secretName: tidb-ca-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-pd-cluster-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-pd-cluster-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "TiDB"
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - "tidb-pd"
+  - "tidb-pd.tidb-cluster"
+  - "tidb-pd.tidb-cluster.svc"
+  - "tidb-pd-peer"
+  - "tidb-pd-peer.tidb-cluster"
+  - "tidb-pd-peer.tidb-cluster.svc"
+  - "*.tidb-pd-peer"
+  - "*.tidb-pd-peer.tidb-cluster"
+  - "*.tidb-pd-peer.tidb-cluster.svc"
+  ipAddresses:
+  - 127.0.0.1
+  - ::1
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-tikv-cluster-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-tikv-cluster-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "TiDB"
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - "tidb-tikv"
+  - "tidb-tikv.tidb-cluster"
+  - "tidb-tikv.tidb-cluster.svc"
+  - "tidb-tikv-peer"
+  - "tidb-tikv-peer.tidb-cluster"
+  - "tidb-tikv-peer.tidb-cluster.svc"
+  - "*.tidb-tikv-peer"
+  - "*.tidb-tikv-peer.tidb-cluster"
+  - "*.tidb-tikv-peer.tidb-cluster.svc"
+  ipAddresses:
+  - 127.0.0.1
+  - ::1
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-tidb-cluster-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-tidb-cluster-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "TiDB"
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - "tidb-tidb"
+  - "tidb-tidb.tidb-cluster"
+  - "tidb-tidb.tidb-cluster.svc"
+  - "tidb-tidb-peer"
+  - "tidb-tidb-peer.tidb-cluster"
+  - "tidb-tidb-peer.tidb-cluster.svc"
+  - "*.tidb-tidb-peer"
+  - "*.tidb-tidb-peer.tidb-cluster"
+  - "*.tidb-tidb-peer.tidb-cluster.svc"
+  ipAddresses:
+  - 127.0.0.1
+  - ::1
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-ticdc-cluster-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-ticdc-cluster-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "TiDB"
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - "tidb-ticdc"
+  - "tidb-ticdc.tidb-cluster"
+  - "tidb-ticdc.tidb-cluster.svc"
+  - "tidb-ticdc-peer"
+  - "tidb-ticdc-peer.tidb-cluster"
+  - "tidb-ticdc-peer.tidb-cluster.svc"
+  - "*.tidb-ticdc-peer"
+  - "*.tidb-ticdc-peer.tidb-cluster"
+  - "*.tidb-ticdc-peer.tidb-cluster.svc"
+  ipAddresses:
+  - 127.0.0.1
+  - ::1
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io            
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-tidb-client-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-tidb-client-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "TiDB Client"
+  usages:
+    - client auth
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io    
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tidb-pd-dashboard-client-secret
+  namespace: tidb-cluster
+spec:
+  secretName: tidb-pd-dashboard-client-secret
+  duration: 8760h # 365d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - PingCAP
+  commonName: "PD Dashboard client"
+  usages:
+    - client auth
+  issuerRef:
+    name: tidb-tidb-issuer
+    kind: Issuer
+    group: cert-manager.io    
