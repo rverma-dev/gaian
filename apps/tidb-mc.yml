@@ -32,6 +32,7 @@ spec:
     maxFailoverCount: 0
     replicas: 3
     enableDashboardInternalProxy: true
+    mountClusterClientSecret: true
     requests:
       storage: "10Gi"
     #  validate using show placement labels; SHOW PLACEMENT;
@@ -55,19 +56,19 @@ spec:
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/component
-                  operator: In
-                  values:
-                    - pd
-            topologyKey: kubernetes.io/hostname
-    mountClusterClientSecret: true
+        - labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - pd
+          topologyKey: kubernetes.io/hostname
   tikv:
     storageClassName: ultra-csi
     baseImage: pingcap/tikv
     maxFailoverCount: 0
     replicas: 2
+    mountClusterClientSecret: true
     requests:
       storage: "50Gi"
     config: |
@@ -92,13 +93,13 @@ spec:
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/component
-                  operator: In
-                  values:
-                    - tikv
-              topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - tikv
+          topologyKey: kubernetes.io/hostname
   tidb:
     storageClassName: managed-csi
     baseImage: pingcap/tidb
@@ -148,13 +149,13 @@ spec:
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/component
-                  operator: In
-                  values:
-                    - tidb
-              topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - tidb
+          topologyKey: kubernetes.io/hostname
   ticdc:
     baseImage: pingcap/ticdc
     replicas: 1
