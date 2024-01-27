@@ -2,9 +2,10 @@ apiVersion: pingcap.com/v1alpha1
 kind: TidbMonitor
 metadata:
   name: basic
+  namespace: tidb-cluster
 spec:
   clusters:
-    - name: monitor
+    - name: tidb
       namespace: tidb-cluster
   persistent: true
   storageClassName: default-csi
