@@ -42,5 +42,10 @@ spec:
       enabled: false    
     testkube-dashboard:
       enabled: false
-    nats.natsbox:
-      nodeSelector: {}
+    nats:
+      nats:
+        limits:
+          maxPayload: 8MB
+        nodeSelector: {}
+      natsbox:
+        nodeSelector: {}
