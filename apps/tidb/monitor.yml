@@ -7,7 +7,7 @@ spec:
     - name: monitor
       namespace: tidb-cluster
   persistent: true
-  storageClassName: managed-csi
+  storageClassName: default-csi
   storage: 5G
   prometheus:
     baseImage: prom/prometheus
@@ -29,20 +29,3 @@ spec:
     baseImage: quay.io/prometheus-operator/prometheus-config-reloader
     version: v0.49.0
   imagePullPolicy: IfNotPresent
----
-apiVersion: pingcap.com/v1alpha1
-kind: TidbDashboard
-metadata:
-  name: dashboard
-  namespace: tidb-cluster
-spec:
-  baseImage: pingcap/tidb-dashboard
-  storageClassName: managed-csi
-  version: latest
-  clusters:
-    - name: tidb
-      namespace: tidb-cluster
-  requests:
-    storage: 10Gi
-  limits:
-    memory: 256Mi
