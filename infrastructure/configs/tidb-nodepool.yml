@@ -86,7 +86,7 @@ spec:
           values: ["linux"]
         - key: karpenter.azure.com/sku-name
           operator: In
-          values: ["Standard_F8s_v2"]
+          values: ["Standard_F4s_v2"]
         - key: "karpenter.sh/capacity-type"
           operator: In
           values: ["spot", "on-demand"]
@@ -130,7 +130,7 @@ spec:
           values: ["linux"]
         - key: karpenter.azure.com/sku-name
           operator: In
-          values: ["Standard_E8s_v4"]
+          values: ["Standard_E4s_v4"]
         - key: "karpenter.sh/capacity-type"
           operator: In
           values: ["spot", "on-demand"]
