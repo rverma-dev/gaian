@@ -42,3 +42,5 @@ spec:
       enabled: false    
     testkube-dashboard:
       enabled: false
+    nats.natsbox:
+      nodeSelector: {}
