@@ -4,9 +4,26 @@ metadata:
   name: xk6-executor
   namespace: testkube
 spec:
+  args:
+  - <k6Command>
+  - <envVars>
+  - <runPath>
+  command:
+  - k6
+  content_types:
+  - string
+  - file-uri
+  - git-file
+  - git-dir
+  - git
   executor_type: job
+  features:
+  - artifacts
   image: ghcr.io/rverma-dev/k6:sha-d8ebfc1
+  meta:
+    docsURI: https://kubeshop.github.io/testkube/test-types/executor-k6
+    iconURI: k6
   types:
-    - k6/script
-    - k6/run
-    - k6/cloud
+  - k6/script
+  - k6/run
+  - k6/cloud
