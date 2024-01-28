@@ -7,6 +7,6 @@ spec:
   executor_type: container
   image: ghcr.io/rverma-dev/k6:sha-e232f4d
   types:
-  - k6/script
-  - k6/run
-  - k6/cloud
+    - k6/script
+    - k6/run
+    - k6/cloud
