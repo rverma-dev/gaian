@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - cluster-issuers.yaml
+  - cluster-issuers.yml
   - tidb-nodepool.yml
   - spot-nodepool.yml
   - testkube-executors.yml

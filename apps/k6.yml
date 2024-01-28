@@ -10,3 +10,4 @@ spec:
     usernameSecret:
       name: ge-test-source-secrets
       key: git-username
+---
