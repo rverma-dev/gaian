@@ -4,8 +4,8 @@ metadata:
   name: xk6-executor
   namespace: testkube
 spec:
-  executor_type: container
-  image: ghcr.io/rverma-dev/k6:sha-e232f4d
+  executor_type: job
+  image: ghcr.io/rverma-dev/k6:sha-d8ebfc1
   types:
     - k6/script
     - k6/run
