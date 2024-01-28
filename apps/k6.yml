@@ -19,6 +19,3 @@ spec:
       usernameSecret:
         key: git-username
         name: sample-secrets
-  executionRequest:
-    args:
-      - default-test.js
