@@ -1,21 +1,12 @@
-apiVersion: tests.testkube.io/v3
-kind: Test
+apiVersion: tests.testkube.io/v1
+kind: TestSource
 metadata:
-  labels:
-    executor: k6-executor
-    test: demo
-    test-type: k6-script
-  name: sample
+  name: ge-test
   namespace: testkube
 spec:
-  type: k6/script
-  content:
+  repository:
     type: git-dir
-    repository:
-      type: git
-      uri: https://github.com/rverma-dev/ge-test.git
-      branch: main
-      path: dist/default-test.js
-      usernameSecret:
-        key: git-username
-        name: sample-secrets
+    uri: https://github.com/rverma-dev/ge-test.git
+    usernameSecret:
+      name: ge-test-source-secrets
+      key: git-username

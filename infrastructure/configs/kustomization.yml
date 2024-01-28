@@ -4,3 +4,4 @@ resources:
   - cluster-issuers.yaml
   - tidb-nodepool.yml
   - spot-nodepool.yml
+  - testkube-executors.yml
