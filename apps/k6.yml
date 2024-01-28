@@ -1,0 +1,24 @@
+apiVersion: tests.testkube.io/v3
+kind: Test
+metadata:
+  labels:
+    executor: k6-executor
+    test: demo
+    test-type: k6-script
+  name: sample
+  namespace: testkube
+spec:
+  type: k6/script
+  content:
+    type: git-dir
+    repository:
+      type: git
+      uri: https://github.com/rverma-dev/ge-test.git
+      branch: main
+      path: dist/default-test.js
+      usernameSecret:
+        key: git-username
+        name: sample-secrets
+  executionRequest:
+    args:
+      - default-test.js
