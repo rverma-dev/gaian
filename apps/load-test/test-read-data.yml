@@ -1,0 +1,36 @@
+apiVersion: tests.testkube.io/v3
+kind: Test
+metadata:
+  name: read-data
+  namespace: testkube
+  labels:
+    executor: xk6-executor
+    test: tidb
+    test-type: xk6-script
+spec:
+  type: xk6/script
+  content:
+    type: git-dir
+    repository:
+      branch: main
+      path: dist
+  source: ge-test
+  executionRequest:
+    variables:
+      TIDB_PASSWORD:
+        name: TIDB_PASSWORD
+        type: secret
+        valueFrom:
+          secretKeyRef:
+            name: sample-testvars
+            key: TIDB_PASSWORD
+    args:
+      - "--summary-export"
+      - "/home/k6/read-data.json"
+      - tidb-readData-test.js 
+    artifactRequest:
+      dirs:
+        - /home/k6
+      masks:
+        - .*\.json
+      sharedBetweenPods: false

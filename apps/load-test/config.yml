@@ -1,0 +1,14 @@
+apiVersion: tests.testkube.io/v1
+kind: TestSource
+metadata:
+  name: ge-test
+  namespace: testkube
+spec:
+  repository:
+    type: git
+    uri: https://github.com/rverma-dev/ge-test.git
+    usernameSecret:
+      name: ge-test-source-secrets
+      key: git-username
+
+              

@@ -1,0 +1,37 @@
+apiVersion: tests.testkube.io/v3
+kind: Test
+metadata:
+  name: insert-data
+  namespace: testkube
+  labels:
+    executor: xk6-executor
+    test: tidb
+    test-type: xk6-script
+spec:
+  type: xk6/script
+  content:
+    type: git-dir
+    repository:
+      branch: main
+      path: dist
+  source: ge-test
+  executionRequest:
+    variables:
+      TIDB_PASSWORD:
+        name: TIDB_PASSWORD
+        type: secret
+        valueFrom:
+          secretKeyRef:
+            name: sample-testvars
+            key: TIDB_PASSWORD
+    args:
+      - "--summary-export"
+      - "/home/k6/insert-data.json"
+      - tidb-insertData-test.js 
+    artifactRequest:
+      dirs:
+        - /home/k6
+      masks:
+        - .*\.json
+      sharedBetweenPods: false
+    jobTemplate: "apiVersion: batch/v1\nkind: Job\nspec:\n  template:\n    spec:\n      containers:\n        - name: \"{{ .Name }}\"\n          image: {{ .Image }}\n          imagePullPolicy: Always\n          command:\n            - \"/bin/runner\"\n            - '{{ .Jsn }}'\n          resources:\n            requests:\n              cpu: 8096m\n            limits:\n              cpu: 8096m\n      nodeSelector:\n        dedicated: k6\n      tolerations:\n        - effect: NoSchedule\n          key: dedicated\n          operator: Equal\n          value: k6\n"
