@@ -19,7 +19,7 @@ spec:
   executor_type: job
   features:
   - artifacts
-  image: ghcr.io/rverma-dev/k6:main
+  image: ghcr.io/rverma-dev/k6:sha-d8ebfc1
   types:
   - xk6/script
   - xk6/run
