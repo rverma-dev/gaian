@@ -39,7 +39,7 @@ spec:
             key: TIDB_PASSWORD
     args:
       - "--out"
-      - "json=create-ge.json"
+      - "json=/home/k6/create-ge.json"
       - "tidb-createGE-test.js"
     executePostRunScriptBeforeScraping: false
     artifactRequest:
@@ -78,8 +78,14 @@ spec:
             key: TIDB_PASSWORD
     args:
       - "--out"
-      - "json=insert-data.json"
+      - "json=/home/k6/insert-data.json"
       - tidb-insertData-test.js 
+    artifactRequest:
+      dirs:
+        - /home/k6
+      masks:
+        - .*\.json
+      sharedBetweenPods: false
 ---
 apiVersion: tests.testkube.io/v3
 kind: Test
@@ -109,6 +115,12 @@ spec:
             key: TIDB_PASSWORD
     args:
       - "--out"
-      - "json=read-data.json"
+      - "json=/home/k6/read-data.json"
       - tidb-readData-test.js 
+    artifactRequest:
+      dirs:
+        - /home/k6
+      masks:
+        - .*\.json
+      sharedBetweenPods: false
 ---
