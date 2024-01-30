@@ -103,7 +103,7 @@ spec:
     storageClassName: default-csi
     baseImage: pingcap/tidb
     maxFailoverCount: 0
-    replicas: 2
+    replicas: 3
     initializer:
       createPassword: true
     service:
