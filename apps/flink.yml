@@ -2,18 +2,18 @@ apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
   namespace: flink
-  name: flink-cluster
+  name: flink-session-cluster
 spec:
   image: flink:1.17
   flinkVersion: v1_17
   flinkConfiguration:
     job.autoscaler.enabled: "true"
     job.autoscaler.stabilization.interval: "1m"
-    job.autoscaler.metrics.window: "15m"
-    job.autoscaler.target.utilization: "0.5"
+    job.autoscaler.metrics.window: "5m"
+    job.autoscaler.target.utilization: "0.8"
     job.autoscaler.target.utilization.boundary: "0.3"
     pipeline.max-parallelism: "5"
-    taskmanager.numberOfTaskSlots: "4"
+    taskmanager.numberOfTaskSlots: "100"
   serviceAccount: flink
   mode: standalone
   jobManager:
