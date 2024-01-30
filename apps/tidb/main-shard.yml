@@ -72,6 +72,7 @@ spec:
       storage: "50Gi"
     config: |
       max-days = 1
+      log-level = "error"
       auto-adjust-pool-size = true
       [server]
         [rocksdb.titan]
@@ -118,6 +119,12 @@ spec:
         max-procs = 0
       [security]
         cert-allowed-cn = [ "TiDB" ]
+      [log]
+        level = "error"
+      [prepared-plan-cache]
+        enabled = true
+      [tikv-client]
+        max-batch-wait-time = 2000000
     annotations:
       tidb.pingcap.com/sysctl-init: "true"
     podSecurityContext:

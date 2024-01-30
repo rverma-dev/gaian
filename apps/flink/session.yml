@@ -12,17 +12,17 @@ spec:
     job.autoscaler.metrics.window: "5m"
     job.autoscaler.target.utilization: "0.8"
     job.autoscaler.target.utilization.boundary: "0.3"
-    pipeline.max-parallelism: "5"
+    pipeline.max-parallelism: "1"
     taskmanager.numberOfTaskSlots: "100"
   serviceAccount: flink
   mode: standalone
   jobManager:
     resource:
-      memory: "1048m"
+      memory: "1Gi"
       cpu: 1
   taskManager:
     resource:
-      memory: "1048m"
+      memory: "1Gi"
       cpu: 1
   maxReplicas: 5
 ---

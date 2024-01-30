@@ -1,0 +1,28 @@
+
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: csv-to-tidb-size100
+  namespace: flink
+spec:
+  image: gaianmobius/test-flink-stream:0.0.121
+  flinkVersion: v1_17
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "16"
+    restart-strategy.type: fixed-delay
+    restart-strategy.fixed-delay.attempts: "3"
+    restart-strategy.fixed-delay.delay: "10 s"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "16000m"
+      cpu: 2
+  taskManager:
+    resource:
+      memory: "16000m"
+      cpu: 2
+  job:
+    jarURI: local:///opt/flink/usrlib/original-flink-demo-0.0.6.jar
+    entryClass: flinkdemo.flinkdemo.FlinkDemoApplication
+    parallelism: 32
+    upgradeMode: stateless
