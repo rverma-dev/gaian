@@ -67,7 +67,7 @@ spec:
     storageClassName: ultra-csi
     baseImage: pingcap/tikv
     maxFailoverCount: 0
-    replicas: 2
+    replicas: 3
     requests:
       storage: "50Gi"
     config: |
@@ -103,7 +103,7 @@ spec:
     storageClassName: default-csi
     baseImage: pingcap/tidb
     maxFailoverCount: 0
-    replicas: 3
+    replicas: 2
     initializer:
       createPassword: true
     service:
