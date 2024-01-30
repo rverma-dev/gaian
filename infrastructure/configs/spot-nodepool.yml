@@ -60,4 +60,4 @@ spec:
     consolidationPolicy: WhenUnderutilized
     expireAfter: Never
   limits:
-    cpu: "20"    
+    cpu: "50"    
