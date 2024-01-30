@@ -15,12 +15,12 @@ spec:
   serviceAccount: flink
   jobManager:
     resource:
-      memory: "16Gi"
-      cpu: 2
+      memory: "15Gi"
+      cpu: "1500m"
   taskManager:
     resource:
-      memory: "16Gi"
-      cpu: 16
+      memory: "15Gi"
+      cpu: "15000m"
   job:
     jarURI: local:///opt/flink/usrlib/original-flink-demo-0.0.2.jar
     entryClass: flinkdemo.flinkdemo.FlinkDemoApplication
