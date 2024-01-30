@@ -5,5 +5,5 @@ resources:
   - https://raw.githubusercontent.com/pingcap/tidb-operator/master/manifests/crd.yaml
   - tidb.yml
   - kubeshop.yml
-  # - flink.yml
+  - flink.yml
   # - confluent.yml
