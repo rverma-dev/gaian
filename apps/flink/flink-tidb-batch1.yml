@@ -5,12 +5,9 @@ metadata:
   namespace: flink
 spec:
   image: gaianmobius/test-flink-stream:0.0.111
-  flinkVersion: v1_17
+  flinkVersion: v1_18
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: "16"
-    restart-strategy.type: fixed-delay
-    restart-strategy.fixed-delay.attempts: "3"
-    restart-strategy.fixed-delay.delay: "10s"
     kubernetes.taskmanager.node-selector: "dedicated:flink"
     kubernetes.taskmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
     kubernetes.jobmanager.node-selector: "dedicated:flink"
@@ -18,8 +15,8 @@ spec:
   serviceAccount: flink
   jobManager:
     resource:
-      memory: "2Gi"
-      cpu: 1
+      memory: "16Gi"
+      cpu: 2
   taskManager:
     resource:
       memory: "16Gi"
