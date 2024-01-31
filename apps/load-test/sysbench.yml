@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sysbench
+  namespace: default
+spec:
+  containers:
+  - name: sysbench
+    image: gcr.io/pingcap-public/pingcap/tidb-sysbench:latest
+    command: [ "/usr/local/bin/sysbench" ]
+    args: [ "sysbench oltp_write_only \
+  --threads=64 \
+  --db-driver=mysql \
+  --mysql-host=tidb-tidb.tidb-cluster.svc.cluster.local \
+  --mysql-port=4000 \
+  --mysql-user=root \
+  --mysql-password=7KCX2-/9@Ok0m \
+  --mysql-db=test \
+  --events=0 --time=300 \
+  --tables=10 --table_size=10000000 \
+  --range_selects=off --db-ps-mode=disable --report-interval=1 run" ]
+    resources:
+      limits:
+        cpu: "15"
+        memory: "30Gi"
+  nodeSelector:
+    dedicated: "sysbench"
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "sysbench"
+    effect: "NoSchedule"
+  restartPolicy: Never
+---
+
+
+# az aks nodepool add --name sysbench \
+#     --cluster-name karpuktest    \
+#     --resource-group mobius-prod-rg \
+#     --node-vm-size Standard_D32as_v5 \
+#     --zones 1 \
+#     --aks-custom-headers EnableAzureDiskFileCSIDriver=true \
+#     --node-count 1 \
+#     --labels dedicated=sysbench \
+#     --node-taints dedicated=sysbench:NoSchedule
+
+
