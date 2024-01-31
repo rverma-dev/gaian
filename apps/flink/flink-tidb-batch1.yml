@@ -7,7 +7,7 @@ spec:
   image: gaianmobius/test-flink-stream:0.0.111
   flinkVersion: v1_18
   flinkConfiguration:
-    taskmanager.numberOfTaskSlots: "16"
+    taskmanager.numberOfTaskSlots: "32"
     kubernetes.taskmanager.node-selector: "dedicated:flink"
     kubernetes.taskmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
     kubernetes.jobmanager.node-selector: "dedicated:flink"
@@ -16,13 +16,13 @@ spec:
   jobManager:
     resource:
       memory: "15Gi"
-      cpu: 1.5
+      cpu: 1.6
   taskManager:
     resource:
       memory: "15Gi"
-      cpu: 15.5
+      cpu: 15.6
   job:
     jarURI: local:///opt/flink/usrlib/original-flink-demo-0.0.2.jar
     entryClass: flinkdemo.flinkdemo.FlinkDemoApplication
-    parallelism: 16
+    parallelism: 32
     upgradeMode: stateless
