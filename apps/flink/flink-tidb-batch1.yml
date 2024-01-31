@@ -10,13 +10,11 @@ spec:
     taskmanager.numberOfTaskSlots: "32"
     kubernetes.taskmanager.node-selector: "dedicated:flink"
     kubernetes.taskmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
-    kubernetes.jobmanager.node-selector: "dedicated:flink"
-    kubernetes.jobmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
   serviceAccount: flink
   jobManager:
     resource:
-      memory: "15Gi"
-      cpu: 1.6
+      memory: "2048m"
+      cpu: 1.0
   taskManager:
     resource:
       memory: "15Gi"
