@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
  - tidb
  - load-test
- - flink
