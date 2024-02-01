@@ -1,3 +1,35 @@
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: sysbench-nodepool
+spec:
+  template:
+    metadata:
+      labels:
+        dedicated: sysbench
+    spec:
+      nodeClassRef:
+        name: default
+      requirements:
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+      taints:
+        - key: dedicated
+          value: sysbench
+          effect: NoSchedule
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    expireAfter: Never
+  limits:
+    cpu: "100"  
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -16,12 +48,12 @@ spec:
           command: ["/usr/local/bin/sysbench"]
           args:
             - oltp_write_only
-            - --threads=64
+            - --threads=400
             - --db-driver=mysql
             - --mysql-host=tidb-tidb.tidb-cluster.svc.cluster.local
             - --mysql-port=4000
             - --mysql-user=root
-            - --mysql-password=password
+            - --mysql-password=7KCX2-/9@Ok0m
             - --mysql-db=test
             - --events=0
             - --time=300
