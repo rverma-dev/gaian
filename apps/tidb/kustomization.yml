@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
  - certs.yml
  - main-shard.yml
- - monitor.yml
+#  - monitor.yml
