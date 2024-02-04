@@ -1,0 +1,62 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana-k8s-monitoring
+  namespace: default
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: k8s-monitoring
+      version: "<chart version>"  # Specify the chart version if needed
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: -1
+  values:
+    cluster:
+      name: my-cluster
+    externalServices:
+      prometheus:
+        host: https://prometheus-prod-43-prod-ap-south-1.grafana.net
+        basicAuth:
+          username: "1313899"
+          password: fromSecret
+      tempo:
+        host: https://tempo-prod-19-prod-ap-south-1.grafana.net:443
+        basicAuth:
+          username: "755092"
+          password: fromSecret
+    metrics:
+      cost:
+        enabled: false
+    opencost:
+      enabled: false
+    logs:
+      pod_logs:
+        enabled: false
+      cluster_events:
+        enabled: false
+      enabled: false
+    traces:
+      enabled: true
+  timeout: '120s'
+  rollback:
+    enable: true
+    retry: true
