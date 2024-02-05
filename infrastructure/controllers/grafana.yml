@@ -48,4 +48,4 @@ spec:
       enabled: false
     traces:
       enabled: true
-  timeout: '120s'
+  timeout: '500s'
