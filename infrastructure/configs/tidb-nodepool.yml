@@ -1,79 +1,124 @@
-# # managed-csi-premium
-# apiVersion: storage.k8s.io/v1
-# kind: StorageClass
-# metadata:
-#   name: ultra-csi
-# provisioner: disk.csi.azure.com
-# parameters:
-#   skuname: UltraSSD_LRS
-#   cachingMode: None
-# reclaimPolicy: Delete
-# allowVolumeExpansion: true
-# volumeBindingMode: WaitForFirstConsumer
-# mountOptions:
-#   - nodelalloc
-#   - noatime
-# ---
-# apiVersion: storage.k8s.io/v1
-# kind: StorageClass
-# metadata:
-#   name: default-csi
-# provisioner: disk.csi.azure.com
-# parameters:
-#   skuname: StandardSSD_LRS
-#   cachingMode: None
-# allowVolumeExpansion: true
-# reclaimPolicy: Delete
-# volumeBindingMode: WaitForFirstConsumer
-# mountOptions:
-#   - nodelalloc
-#   - noatime
-# ---
-# apiVersion: karpenter.sh/v1beta1
-# kind: NodePool
-# metadata:
-#   name: tidb-pd-nodepool
-# spec:
-#   template:
-#     metadata:
-#       labels:
-#         dedicated: pd
-#     spec:
-#       nodeClassRef:
-#         name: default
-#       requirements:
-#         - key: kubernetes.io/arch
-#           operator: In
-#           values: ["amd64"]
-#         - key: kubernetes.io/os
-#           operator: In
-#           values: ["linux"]
-#         - key: karpenter.azure.com/sku-name
-#           operator: In
-#           values: ["Standard_F4s_v2"]
-#         - key: "karpenter.sh/capacity-type"
-#           operator: In
-#           values: ["on-demand"]
-#       taints:
-#         - key: dedicated
-#           value: pd
-#           effect: NoSchedule
-#   disruption:
-#     consolidationPolicy: WhenUnderutilized
-#     expireAfter: Never
-#   limits:
-#     cpu: "20"
+# managed-csi-premium
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ultra-csi
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: UltraSSD_LRS
+  cachingMode: None
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+mountOptions:
+  - nodelalloc
+  - noatime
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: default-csi
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: StandardSSD_LRS
+  cachingMode: None
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+mountOptions:
+  - nodelalloc
+  - noatime
+---
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: tidb-pd-nodepool
+spec:
+  template:
+    metadata:
+      labels:
+        dedicated: pd
+    spec:
+      nodeClassRef:
+        name: default
+      requirements:
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.azure.com/sku-name
+          operator: In
+          values: ["Standard_F4s_v2"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+      taints:
+        - key: dedicated
+          value: pd
+          effect: NoSchedule
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    expireAfter: Never
+  limits:
+    cpu: "20"
 
-# ---
+---
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: tidb-tidb-nodepool
+spec:
+  template:
+    metadata:
+      labels:
+        dedicated: tidb
+    spec:
+      nodeClassRef:
+        name: default
+      requirements:
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.azure.com/sku-name
+          operator: In
+          values: ["Standard_F8s_v2"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+      taints:
+        - key: dedicated
+          value: tidb
+          effect: NoSchedule
+      kubelet:
+        kubeReserved:
+          cpu: 100m
+          memory: 100Mi
+        systemReserved:
+          cpu: 100m
+          memory: 100Mi
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    expireAfter: Never
+  limits:
+    cpu: "20"
+
+---
+# ultrassd not working
 # apiVersion: karpenter.sh/v1beta1
 # kind: NodePool
 # metadata:
-#   name: tidb-tidb-nodepool
+#   name: tidb-tikv-nodepool
 # spec:
 #   template:
 #     metadata:
 #       labels:
-#         dedicated: tidb
+#         dedicated: tikv
+#         shard: shard-0    
 #     spec:
 #       nodeClassRef:
 #         name: default
@@ -86,13 +131,13 @@
 #           values: ["linux"]
 #         - key: karpenter.azure.com/sku-name
 #           operator: In
-#           values: ["Standard_F8s_v2"]
+#           values: ["Standard_E8s_v4"]
 #         - key: "karpenter.sh/capacity-type"
 #           operator: In
 #           values: ["on-demand"]
 #       taints:
 #         - key: dedicated
-#           value: tidb
+#           value: tikv
 #           effect: NoSchedule
 #       kubelet:
 #         kubeReserved:
@@ -105,49 +150,4 @@
 #     consolidationPolicy: WhenUnderutilized
 #     expireAfter: Never
 #   limits:
-#     cpu: "20"
-
-# ---
-# # ultrassd not working
-# # apiVersion: karpenter.sh/v1beta1
-# # kind: NodePool
-# # metadata:
-# #   name: tidb-tikv-nodepool
-# # spec:
-# #   template:
-# #     metadata:
-# #       labels:
-# #         dedicated: tikv
-# #         shard: shard-0    
-# #     spec:
-# #       nodeClassRef:
-# #         name: default
-# #       requirements:
-# #         - key: kubernetes.io/arch
-# #           operator: In
-# #           values: ["amd64"]
-# #         - key: kubernetes.io/os
-# #           operator: In
-# #           values: ["linux"]
-# #         - key: karpenter.azure.com/sku-name
-# #           operator: In
-# #           values: ["Standard_E8s_v4"]
-# #         - key: "karpenter.sh/capacity-type"
-# #           operator: In
-# #           values: ["on-demand"]
-# #       taints:
-# #         - key: dedicated
-# #           value: tikv
-# #           effect: NoSchedule
-# #       kubelet:
-# #         kubeReserved:
-# #           cpu: 100m
-# #           memory: 100Mi
-# #         systemReserved:
-# #           cpu: 100m
-# #           memory: 100Mi
-# #   disruption:
-# #     consolidationPolicy: WhenUnderutilized
-# #     expireAfter: Never
-# #   limits:
-# #     cpu: "50"
+#     cpu: "50"
