@@ -9,7 +9,6 @@ spec:
   flinkConfiguration:
     scheduler-mode: REACTIVE
     taskmanager.numberOfTaskSlots: "2"
-    kubernetes.namespace: flink
     state.savepoints.dir: file:///flink-data/savepoints
     state.checkpoints.dir: file:///flink-data/checkpoints
     high-availability.type: kubernetes

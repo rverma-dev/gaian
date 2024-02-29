@@ -38,8 +38,8 @@ spec:
       nodesRule:
         create: true
     podSecurityContext:
-      runAsUser: 9999
-      runAsGroup: 9999
-      fsGroup: 9999
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
 ---
 
