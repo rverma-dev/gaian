@@ -33,5 +33,13 @@ spec:
         kind: HelmRepository
         name: flink-operator-repo
         namespace: flux-system
+  values:
+    rbac:
+      nodesRule:
+        create: true
+    podSecurityContext:
+      runAsUser: 9999
+      runAsGroup: 9999
+      fsGroup: 9999
 ---
 

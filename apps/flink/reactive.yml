@@ -9,9 +9,10 @@ spec:
   flinkConfiguration:
     scheduler-mode: REACTIVE
     taskmanager.numberOfTaskSlots: "2"
+    kubernetes.namespace: flink
     state.savepoints.dir: file:///flink-data/savepoints
     state.checkpoints.dir: file:///flink-data/checkpoints
-    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+    high-availability.type: kubernetes
     high-availability.storageDir: file:///flink-data/ha
     kubernetes.taskmanager.node-selector: "dedicated:flink"
     kubernetes.taskmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
@@ -35,7 +36,7 @@ spec:
       - name: flink-volume
         hostPath:
           path: /tmp/flink
-          type: Directory
+          type: DirectoryOrCreate
   job:
     jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
     parallelism: 2
@@ -43,3 +44,4 @@ spec:
     state: running
     savepointTriggerNonce: 0
   mode: standalone
+
