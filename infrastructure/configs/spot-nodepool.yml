@@ -54,7 +54,7 @@ spec:
           values: ["on-demand"]
         - key: karpenter.azure.com/sku-family
           operator: In
-          values: ["D"]
+          values: ["D", "F"]
       taints:
         - key: dedicated
           value: flink
