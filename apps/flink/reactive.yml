@@ -1,18 +1,16 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: basic-reactive-example
+  name: reactive
   namespace: flink
 spec:
   image: flink:1.17
   flinkVersion: v1_17
   flinkConfiguration:
-    scheduler-mode: REACTIVE
-    taskmanager.numberOfTaskSlots: "2"
+    scheduler-mode: REACTIVE # Enable reactive mode
+    taskmanager.numberOfTaskSlots: "2" # initial task slots, can be considered as slots per pod
     state.savepoints.dir: file:///flink-data/savepoints
-    state.checkpoints.dir: file:///flink-data/checkpoints
-    high-availability.type: kubernetes
-    high-availability.storageDir: file:///flink-data/ha
+    state.checkpoints.dir: file:///flink-data/checkpoints # persisted checkpointing is required since reactive mode restart job from the last checkpoint.
     kubernetes.taskmanager.node-selector: "dedicated:flink"
     kubernetes.taskmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
   serviceAccount: flink
@@ -34,11 +32,11 @@ spec:
       volumes:
       - name: flink-volume
         hostPath:
-          path: /tmp/flink
-          type: DirectoryOrCreate
+          path: /tmp
+          type: Directory
   job:
     jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
-    parallelism: 2
+    parallelism: 2 #The parallelism of individual operators in a job will be determined by the scheduler. It is not configurable and will be ignored if explicitly set, either on individual operators or the entire job.
     upgradeMode: savepoint
     state: running
     savepointTriggerNonce: 0
