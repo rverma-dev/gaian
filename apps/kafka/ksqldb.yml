@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: openmeter-ksql-server-jmx-configmap
+  namespace: metering
   labels:
     app: ksql-server
 data:
@@ -164,6 +165,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: openmeter-ksql-server
+  namespace: metering
   labels:
     app: ksql-server
 spec:
@@ -179,6 +181,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: openmeter-ksql-server
+  namespace: metering
   labels:
     app: ksql-server
 spec:

@@ -4,7 +4,7 @@ resources:
   # - cert-manager.yml
   # - https://raw.githubusercontent.com/pingcap/tidb-operator/master/manifests/crd.yaml
   # - tidb.yml
-  - kubeshop.yml
+  # - kubeshop.yml
   # - flink.yml
   - strimzi
   - clickhouse.yml
