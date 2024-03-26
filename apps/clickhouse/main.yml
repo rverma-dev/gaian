@@ -1,0 +1,74 @@
+apiVersion: clickhouse.altinity.com/v1
+kind: ClickHouseInstallation
+metadata:
+  name: openmeter
+  namespace: metering
+spec:
+  defaults:
+    templates:
+      dataVolumeClaimTemplate: data-volume-template
+      logVolumeClaimTemplate: log-volume-template
+      podTemplate: pod-template-with-metrics
+      serviceTemplate: svc-template
+  configuration:
+    clusters:
+      - name: openmeter
+        layout:
+          shardsCount: 1
+          replicasCount: 1
+    settings:
+      logger/level: "warning"
+      prometheus/endpoint: /metrics
+      prometheus/port: 9363
+      prometheus/metrics: true
+      prometheus/events: true
+      prometheus/asynchronous_metrics: true
+      prometheus/status_info: true
+      http_port: 8124
+      tcp_port: 9001
+      interserver_http_port: 9010
+  templates:
+    podTemplates:
+      - name: pod-template-with-metrics
+        metadata:
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/path: "/metrics"
+            prometheus.io/port: "9363"
+        spec:
+          containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:latest
+              ports:
+                - name: "metrics"
+                  containerPort: 9363
+    serviceTemplates:
+      - name: svc-template
+        generateName: chendpoint-{chi}
+        metadata:
+          annotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        spec:
+          ports:
+            - name: http
+              port: 8123
+            - name: tcp
+              port: 9000
+            - name: metrics
+              port: 9363
+          type: ClusterIP                  
+    volumeClaimTemplates:
+      - name: data-volume-template
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+      - name: log-volume-template
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 3Gi

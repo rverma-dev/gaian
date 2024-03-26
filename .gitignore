@@ -1,3 +1,5 @@
 flink.java
 .idea
 .DS_STORE
+.vscode
+apps/grafana/grafana-k8s.yml
