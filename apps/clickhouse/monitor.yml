@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: clickhouse
+  labels:
+    instance: primary
+  namespace: metering
+spec:
+  selector:
+    matchLabels:
+      clickhouse.altinity.com/Service: chi
+  endpoints:
+  - port: metrics
+    relabelings:
+      - action: replace
+        replacement: integrations/clickhouse
+        targetLabel: job
+      - action: replace
+        sourceLabels: [__meta_kubernetes_pod_label_clickhouse_altinity_com_cluster]
+        targetLabel: clickhouse_cluster      
+      - action: replace
+        sourceLabels: [__meta_kubernetes_pod_name]
+        replacement: $1
+        targetLabel: instance

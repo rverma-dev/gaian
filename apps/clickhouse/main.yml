@@ -6,16 +6,20 @@ metadata:
 spec:
   defaults:
     templates:
-      dataVolumeClaimTemplate: data-volume-template
-      logVolumeClaimTemplate: log-volume-template
       podTemplate: pod-template-with-metrics
       serviceTemplate: svc-template
+      dataVolumeClaimTemplate: openmeter-ch-data
   configuration:
     clusters:
       - name: openmeter
         layout:
           shardsCount: 1
-          replicasCount: 1
+          replicasCount: 0
+    users:
+      default/networks/ip: "::/0"
+      openmeter/password_sha256_hex: 9f182fa055b7458a6768d651a9c504d8dbe42710787f83ecce6cee415d95048f
+      openmeter/networks/ip:
+        - 0.0.0.0/0
     settings:
       logger/level: "warning"
       prometheus/endpoint: /metrics
@@ -24,27 +28,22 @@ spec:
       prometheus/events: true
       prometheus/asynchronous_metrics: true
       prometheus/status_info: true
-      http_port: 8124
-      tcp_port: 9001
-      interserver_http_port: 9010
   templates:
     podTemplates:
       - name: pod-template-with-metrics
-        metadata:
-          annotations:
-            prometheus.io/scrape: "true"
-            prometheus.io/path: "/metrics"
-            prometheus.io/port: "9363"
         spec:
           containers:
             - name: clickhouse
-              image: clickhouse/clickhouse-server:latest
+              image: clickhouse/clickhouse-server:23.8
+              resources:
+                requests:
+                  cpu: "1000m"
               ports:
-                - name: "metrics"
+                - name: metrics
                   containerPort: 9363
     serviceTemplates:
       - name: svc-template
-        generateName: chendpoint-{chi}
+        generateName: chi-{chi}
         metadata:
           annotations:
             service.beta.kubernetes.io/azure-load-balancer-internal: "true"
@@ -58,17 +57,10 @@ spec:
               port: 9363
           type: ClusterIP                  
     volumeClaimTemplates:
-      - name: data-volume-template
+      - name: openmeter-ch-data
         spec:
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
               storage: 10Gi
-      - name: log-volume-template
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 3Gi

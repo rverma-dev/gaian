@@ -1,0 +1,45 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: openmeter
+  namespace: flux-system
+spec:
+  type: "oci"
+  interval: 5m0s
+  url: oci://ghcr.io/openmeterio/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: openmeter
+  namespace: metering
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: openmeter
+      version: 1.0.0-beta.57
+      sourceRef:
+        kind: HelmRepository
+        name: openmeter
+        namespace: flux-system
+      interval: 1m
+  values:
+    kafka:
+      enabled: false
+      operator:
+        install: false
+    clickhouse:
+      enabled: false
+      operator:
+        install: false
+    config: 
+      ingest:
+          kafka:
+            broker: PLAINTEXT://openmeter-kafka-bootstrap:9092
+      aggregation:
+        clickhouse:
+          address: chi-openmeter:9000
+          username: openmeter
+          password: openmeter
+          database: default

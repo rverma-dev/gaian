@@ -5,6 +5,7 @@ metadata:
   labels:
     strimzi.io/cluster: openmeter
 spec:
+  topicName: om_default_metering
   partitions: 10
   replicas: 2
   config:
