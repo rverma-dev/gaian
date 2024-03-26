@@ -10,11 +10,19 @@ spec:
       serviceTemplate: svc-template
       dataVolumeClaimTemplate: openmeter-ch-data
   configuration:
+    zookeeper:
+      nodes:
+        - host: openmeter-zookeeper-0.metering
+          port: 2181
+        - host: openmeter-zookeeper-1.metering
+          port: 2181
+        - host: openmeter-zookeeper-2.metering
+          port: 2181                    
     clusters:
       - name: openmeter
         layout:
           shardsCount: 1
-          replicasCount: 0
+          replicasCount: 2
     users:
       default/networks/ip: "::/0"
       openmeter/password_sha256_hex: 9f182fa055b7458a6768d651a9c504d8dbe42710787f83ecce6cee415d95048f
@@ -35,9 +43,9 @@ spec:
           containers:
             - name: clickhouse
               image: clickhouse/clickhouse-server:23.8
-              resources:
-                requests:
-                  cpu: "1000m"
+              # resources:
+              #   requests:
+              #     cpu: "800m"
               ports:
                 - name: metrics
                   containerPort: 9363

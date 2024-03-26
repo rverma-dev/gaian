@@ -1,11 +1,11 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-  name: om-default-metering
+  name: om-default-events
   labels:
     strimzi.io/cluster: openmeter
 spec:
-  topicName: om_default_metering
+  topicName: om_default_events
   partitions: 10
   replicas: 2
   config:
