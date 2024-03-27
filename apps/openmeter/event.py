@@ -8,16 +8,16 @@ def generate_random_cloudevent():
     event = {
         "id": str(uuid.uuid4()),
         "specversion": "1.0",
-        "type": "request",
+        "type": "api-request",
         "source": f"/example/source/{random.randint(1, 100)}",
-        "subject": "customer-2",
+        "subject": f"tenant-{random.randint(1, 10)}",
         "time": int(round(time.time() * 1000)),
         "datacontenttype": "application/json",
         "data": json.dumps({
-            "method": "POST",
-            "path": "/",
-            "region": "us-east-1",
-            "zone": "a",
+            "method": random.choice(['GET', 'POST', 'PUT']),
+            "path": "/demo",
+            "region": f"us-east-{random.randint(1, 3)}",
+            "zone": random.choice(['a', 'b', 'c']),
             "duration_ms": random.randint(1, 100)
         }),
     }

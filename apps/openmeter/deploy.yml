@@ -49,6 +49,7 @@ spec:
           enabled: false
           driver: memory
         minCommitCount: 100
+        maxCommitWait: 1s
         namespaceRefetch: 15s
 
       telemetry:
@@ -64,7 +65,15 @@ spec:
         - slug: api_requests_total         # Unique identifier for the meter
           description: API Requests
           eventType: request              # Filter events by type
-          aggregation: COUNT              # Aggregation method: COUNT, SUM, etc.
+          aggregation: COUNT              # Aggregation method: 'SUM' | 'COUNT' | 'AVG' | 'MIN' | 'MAX'
+          windowSize: HOUR
           groupBy:
             region: $.region              # HTTP Method: GET, POST, etc.
-
+        - slug: api_requests_volume        # Unique identifier for the meter
+          description: API Volume
+          eventType: request              # Filter events by type
+          aggregation: SUM              # Aggregation method: 'SUM' | 'COUNT' | 'AVG' | 'MIN' | 'MAX'
+          windowSize: HOUR
+          valueProperty: $.duration_ms
+          groupBy:
+            region: $.region              # HTTP Method: GET, POST, etc.
