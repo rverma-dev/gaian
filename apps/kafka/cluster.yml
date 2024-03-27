@@ -1,180 +1,3 @@
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: kafka-metrics
-  namespace: metering
-  labels:
-    app: strimzi
-data:
-  kafka-metrics-config.yml: |
-    lowercaseOutputName: true
-    rules:
-      # Special cases and very specific rules
-      - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
-        name: kafka_server_$1_$2
-        type: GAUGE
-        labels:
-          clientId: '$3'
-          topic: '$4'
-          partition: '$5'
-      - pattern: kafka.server<type=(.+), name=(.+), clientId=(.+), brokerHost=(.+), brokerPort=(.+)><>Value
-        name: kafka_server_$1_$2
-        type: GAUGE
-        labels:
-          clientId: '$3'
-          broker: '$4:$5'
-
-      - pattern: kafka.server<type=KafkaRequestHandlerPool, name=RequestHandlerAvgIdlePercent><>OneMinuteRate
-        name: kafka_server_kafkarequesthandlerpool_requesthandleravgidlepercent_total
-        type: GAUGE
-
-      - pattern: kafka.server<type=socket-server-metrics, clientSoftwareName=(.+), clientSoftwareVersion=(.+), listener=(.+), networkProcessor=(.+)><>connections
-        name: kafka_server_socketservermetrics_connections
-        type: GAUGE
-        labels:
-          client_software_name: '$1'
-          client_software_version: '$2'
-          listener: '$3'
-          network_processor: '$4'
-
-      - pattern: 'kafka.server<type=socket-server-metrics, listener=(.+), networkProcessor=(.+)><>(.+):'
-        name: kafka_server_socketservermetrics_$3
-        type: GAUGE
-        labels:
-          listener: '$1'
-          network_processor: '$2'
-
-      # Count and Value
-      - pattern: kafka.(.*)<type=(.+), name=(.+), (.+)=(.+), (.+)=(.+)><>(Count|Value)
-        name: kafka_$1_$2_$3
-        labels:
-          '$4': '$5'
-          '$6': '$7'
-      - pattern: kafka.(.*)<type=(.+), name=(.+), (.+)=(.+)><>(Count|Value)
-        name: kafka_$1_$2_$3
-        labels:
-          '$4': '$5'
-      - pattern: kafka.(.*)<type=(.+), name=(.+)><>(Count|Value)
-        name: kafka_$1_$2_$3
-
-      # Percentile
-      - pattern: kafka.(.*)<type=(.+), name=(.+), (.+)=(.*), (.+)=(.+)><>(\d+)thPercentile
-        name: kafka_$1_$2_$3
-        type: GAUGE
-        labels:
-          '$4': '$5'
-          '$6': '$7'
-          quantile: '0.$8'
-      - pattern: kafka.(.*)<type=(.+), name=(.+), (.+)=(.*)><>(\d+)thPercentile
-        name: kafka_$1_$2_$3
-        type: GAUGE
-        labels:
-          '$4': '$5'
-          quantile: '0.$6'
-      - pattern: kafka.(.*)<type=(.+), name=(.+)><>(\d+)thPercentile
-        name: kafka_$1_$2_$3
-        type: GAUGE
-        labels:
-          quantile: '0.$4'
-  zookeeper-metrics-config.yml: |
-    lowercaseOutputName: true
-    lowercaseOutputLabelNames: true
-    whitelistObjectNames:
-      - org.apache.ZooKeeperService:name3=Connections,*
-      - org.apache.ZooKeeperService:name3=InMemoryDataTree,*
-      - org.apache.ZooKeeperService:name0=*,name1=replica*,name2=*
-      - org.apache.ZooKeeperService:name0=*,name1=replica*
-      - org.apache.ZooKeeperService:name0=*
-      # If you are running a Standalone Zookeeper, the whitelist objects below would help.
-      # If the zookeeper has a quorum, no need to worry about anything else.
-      - org.apache.ZooKeeperService:name1=InMemoryDataTree,name0=*
-      - org.apache.ZooKeeperService:name0=*,name1=Connections,name2=*,name3=*
-    rules:
-      # Below rule applies for Zookeeper Cluster having multiple ZK nodes
-      # org.apache.ZooKeeperService:name0=*,name3=Connections,name1=*,name2=*,name4=*,name5=*
-      - pattern: "org.apache.ZooKeeperService<name0=(.+), name1=replica.(\\d+), name2=(\\w+), name3=Connections, name4=(.+), name5=(.+)><>([^:]+)"
-        name: zookeeper_connections_$6
-        labels:
-          server_name: '$1'
-          server_id: $2
-          client_address: '$4'
-          connection_id: '$5'
-          member_type: '$3'
-      - pattern: "org.apache.ZooKeeperService<name0=(.+), name1=replica.(\\d+), name2=(\\w+)><>(\\w+): (\\d+)"
-        name: zookeeper_$4
-        labels:
-          server_name: '$1'
-          server_id: $2
-          member_type: '$3'
-      # Below rule applies for Zookeeper Cluster having multiple ZK nodes
-      # org.apache.ZooKeeperService:name0=*,name3=InMemoryDataTree
-      - pattern: "org.apache.ZooKeeperService<name0=(.+), name1=replica.(\\d+), name2=(\\w+), name3=InMemoryDataTree><>(WatchCount|NodeCount): (\\d+)"
-        name: zookeeper_inmemorydatatree_$4
-        type: GAUGE
-        labels:
-          server_name: '$1'
-          server_id: $2
-          member_type: '$3'
-      # Below rule applies for Zookeeper Cluster having multiple ZK nodes
-      # org.apache.ZooKeeperService:name0=*,name1=replica*
-      - pattern: "org.apache.ZooKeeperService<name0=(.+), name1=replica.(\\d+)><>(.+): (.+)"
-        name: zookeeper_status
-        type: UNTYPED
-        value: 1
-        labels:
-          server_name: '$1'
-          server_id: $2
-          $3: $4
-      # Below rule applies for Zookeeper Cluster having multiple ZK nodes
-      # org.apache.ZooKeeperService:name0=*
-      - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+)><>(QuorumSize): (\\d+)"
-        name: zookeeper_status_$2
-        type: GAUGE
-        labels:
-          server_id: $1
-      # ###########################################################################
-      # ###########################################################################
-      # Below rule applies to a Standalone ZK
-      # org.apache.ZooKeeperService:name0=*,name1=InMemoryDataTree
-      - pattern: "org.apache.ZooKeeperService<name0=(.+), name1=InMemoryDataTree><>(WatchCount|NodeCount): (\\d+)"
-        name: zookeeper_inmemorydatatree_$2
-        type: GAUGE
-        labels:
-          server_name: $1
-          server_id: '1'
-      # Below rule applies to a Standalone ZK
-      # org.apache.ZooKeeperService:name0=*,name1=Connections,name2=*,name3=*
-      - pattern: 'org.apache.ZooKeeperService<name0=(.+), name1=Connections, name2=(.+), name3=(.+)><>([^:]+)'
-        name: zookeeper_connections_$4
-        labels:
-          server_name: '$1'
-          client_address: '$2'
-          connection_id: '$3'
-      # Below rule applies to a Standalone ZK
-      # org.apache.ZooKeeperService:name0=*
-      - pattern: 'org.apache.ZooKeeperService<name0=(.+)><>(StartTime|ClientPort|SecureClientAddress|Version|SecureClientPort): (.+)'
-        name: zookeeper_$2
-        type: GAUGE
-        labels:
-          server_name: '$1'
-          $2: '$3'
-      # Below rule applies to a Standalone ZK
-      # org.apache.ZooKeeperService:name0=*
-      - pattern: 'org.apache.ZooKeeperService<name0=(.+)><>(.+): (.+)'
-        name: zookeeper_$2
-        type: GAUGE
-        labels:
-          server_name: '$1'
-          $2: '$3'
-
-  cruise-metrics-config.yml: |
-    # See https://github.com/prometheus/jmx_exporter for more info about JMX Prometheus Exporter metrics
-    lowercaseOutputName: true
-    rules:
-    - pattern: kafka.cruisecontrol<name=(.+)><>(\w+)
-      name: kafka_cruisecontrol_$1_$2
-      type: GAUGE
----
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
@@ -192,7 +15,7 @@ spec:
       valueFrom:
         configMapKeyRef:
           name: kafka-metrics
-          key: zookeeper-metrics-config.yml      
+          key: zookeeper-metrics-config.yml
   kafka:
     version: 3.7.0
     replicas: 2
@@ -205,10 +28,14 @@ spec:
         port: 9092
         type: internal
         tls: false
+        configuration:
+          useServiceDnsDomain: true
       - name: tls
         port: 9093
         type: internal
         tls: true
+        configuration:
+          useServiceDnsDomain: true
     config:
       auto.create.topics.enable: "false"
       offsets.topic.replication.factor: 2

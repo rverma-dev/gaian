@@ -43,3 +43,22 @@ spec:
           username: openmeter
           password: openmeter
           database: default
+      sink:
+        minCommitCount: 1
+        namespaceRefetch: 1s
+      telemetry:
+      metrics:
+        exporters.otlp.enabled: true
+        exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
+      trace:
+        sampler: always
+        exporters.otlp.enabled: true
+        exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
+      meters:
+        - slug: api_requests_total 
+          description: API Requests
+          eventType: request  
+          aggregation: COUNT   
+          groupBy:
+            source: $.source  
+
