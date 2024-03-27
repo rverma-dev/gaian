@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cep-reactive-config
+  namespace: flink
+data:
+  kafkaBootstrapServer: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  kafkaSourceTopic: "tidb_targettingFramework_t_65e830c2cff27908ad047599_t"
+  kafkaDestinationTopic: "group-sink-test"
+  groupChangeEventTopic: "group-event-test"
+  cepChangeEventTopic: "cep-event-test"
+  groupId: "prod-group-cep-test1"
+  redisHost: "prod-mobius-redis-cache.redis.cache.windows.net"
+  redisPort: "6379"
+  mongoUrl: "mongodb://mobiusprod:**********@172.16.8.6:27017,172.16.8.41:27017,172.16.8.40:27017/TargettingFramework?authSource=admin&maxIdleTimeMS=60000&retryWrites=true"
+  mongoDatabase: "TargettingFramework"
+  tidbHost: "basic-tidb.tidb-cluster.svc.cluster.local"
+  tidbPort: "4000"
+  tidbUser: "root"
+  tidbDatabase: "targettingFramework"
+  cepChangeEvent: "t_65f024f0d76fbe7037eaab9e_t"
+  keyDeserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+  valueDeserializer: "org.apache.kafka.connect.json.JsonDeserializer"
+  enableAutoCommit: "true"
+  autoCommitInterval: "100"
+  autoOffsetResetStrategy: "earliest"
+  maxPoolRecords: "100"
+  maxPoolInterval: "60000"
+  sessionTimeout: "60000"
+  heartBeatInterval: "5000"
+  partitionAssignmentStrategy: "org.apache.kafka.clients.consumer.RoundRobinAssignor"
+  metadataMaxAge: "5000"
+  fetchMinBytes: "1"
+  requestTimeout: "305000"
+---  
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: reactive
+  namespace: flink
+spec:
+  image: ghcr.io/rverma-dev/group-evaluation:latest
+  flinkVersion: v1_17
+  flinkConfiguration:
+    scheduler-mode: REACTIVE # Enable reactive mode
+    taskmanager.numberOfTaskSlots: "2" # initial task slots, can be considered as slots per pod
+    state.savepoints.dir: file:///flink-data/savepoints
+    state.checkpoints.dir: file:///flink-data/checkpoints # persisted checkpointing is required since reactive mode restart job from the last checkpoint.
+    # kubernetes.taskmanager.node-selector: "dedicated:flink"
+    # kubernetes.taskmanager.tolerations: "key:dedicated,operator:Equal,value:flink,effect:NoSchedule"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  podTemplate:
+    spec:
+      containers:
+        - name: flink-main-container
+          envFrom:
+          - configMapRef:
+              name: cep-reactive-config
+          volumeMounts:
+          - mountPath: /flink-data
+            name: flink-volume
+      volumes:
+      - name: flink-volume
+        hostPath:
+          path: /tmp
+          type: Directory
+  job:
+    jarURI: local:///opt/flink/lib/app.jar
+    parallelism: 2 #The parallelism of individual operators in a job will be determined by the scheduler. It is not configurable and will be ignored if explicitly set, either on individual operators or the entire job.
+    upgradeMode: savepoint
+    state: running
+    savepointTriggerNonce: 0
+  mode: standalone
+

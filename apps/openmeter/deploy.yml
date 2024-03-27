@@ -36,29 +36,35 @@ spec:
     config: 
       ingest:
           kafka:
-            broker: PLAINTEXT://openmeter-kafka-bootstrap:9092
+            broker: PLAINTEXT://openmeter-kafka-bootstrap.metering.svc.cluster.local:9092
       aggregation:
         clickhouse:
-          address: chi-openmeter:9000
+          address: chi-openmeter.metering.svc.cluster.local:9000
           username: openmeter
           password: openmeter
-          database: default
+          database: default    
+
       sink:
-        minCommitCount: 1
-        namespaceRefetch: 1s
+        dedupe:
+          enabled: false
+          driver: memory
+        minCommitCount: 100
+        namespaceRefetch: 15s
+
       telemetry:
-      metrics:
-        exporters.otlp.enabled: true
-        exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
-      trace:
-        sampler: always
-        exporters.otlp.enabled: true
-        exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
+        metrics:
+          exporters.otlp.enabled: true
+          exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
+        trace:
+          sampler: always
+          exporters.otlp.enabled: true
+          exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
+
       meters:
-        - slug: api_requests_total 
+        - slug: api_requests_total         # Unique identifier for the meter
           description: API Requests
-          eventType: request  
-          aggregation: COUNT   
+          eventType: request              # Filter events by type
+          aggregation: COUNT              # Aggregation method: COUNT, SUM, etc.
           groupBy:
-            source: $.source  
+            region: $.region              # HTTP Method: GET, POST, etc.
 
