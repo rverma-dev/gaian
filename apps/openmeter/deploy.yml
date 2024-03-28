@@ -48,7 +48,7 @@ spec:
         dedupe:
           enabled: false
           driver: memory
-        minCommitCount: 100
+        minCommitCount: 10
         maxCommitWait: 1s
         namespaceRefetch: 15s
 
@@ -62,15 +62,15 @@ spec:
           exporters.otlp.address: grafana-k8s-monitoring-grafana-agent.default.svc.cluster.local:4317
 
       meters:
-        - slug: api_requests_total         # Unique identifier for the meter
-          description: API Requests
+        - slug: api_requests_total_v1         # Unique identifier for the meter
+          description: API Requests Usage
           eventType: request              # Filter events by type
           aggregation: COUNT              # Aggregation method: 'SUM' | 'COUNT' | 'AVG' | 'MIN' | 'MAX'
           windowSize: HOUR
           groupBy:
             region: $.region              # HTTP Method: GET, POST, etc.
-        - slug: api_requests_volume        # Unique identifier for the meter
-          description: API Volume
+        - slug: api_requests_volume_v1       # Unique identifier for the meter
+          description: API Volume Usage
           eventType: request              # Filter events by type
           aggregation: SUM              # Aggregation method: 'SUM' | 'COUNT' | 'AVG' | 'MIN' | 'MAX'
           windowSize: HOUR
